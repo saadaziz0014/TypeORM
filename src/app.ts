@@ -64,6 +64,12 @@ app.get("/read", async (req: Request, res: Response) => {
   res.json(data);
 });
 
+app.get("/readP", async (req: Request, res: Response) => {
+  const mprofile = MyDataS.getRepository(Profile);
+  const data = await mprofile.find({ relations: { user: true } });
+  res.json(data);
+});
+
 const MyDataS = new DataSource({
   type: "postgres",
   host: "localhost",
