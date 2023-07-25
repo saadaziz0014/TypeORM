@@ -5,9 +5,12 @@ import {
   OneToOne,
   JoinColumn,
   OneToMany,
+  ManyToMany,
+  JoinTable,
 } from "typeorm";
 import { Profile } from "./profile";
 import { Post } from "./post";
+import { Course } from "./course";
 
 @Entity()
 export class User {
@@ -24,4 +27,7 @@ export class User {
   profile: Profile;
   @OneToMany(() => Post, (post) => post.user, { cascade: true, eager: true })
   post: Post[];
+  @ManyToMany(() => Course, { cascade: true, eager: true })
+  @JoinTable({ name: "User_Course" })
+  courses: Course[];
 }

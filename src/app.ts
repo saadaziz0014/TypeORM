@@ -4,6 +4,7 @@ import { DataSource, Like } from "typeorm";
 import { User } from "./entities/user";
 import { Profile } from "./entities/profile";
 import { Post } from "./entities/post";
+import { Course } from "./entities/course";
 const app = express();
 
 app.use(express.json());
@@ -94,7 +95,29 @@ app.post("/createX", async (req: Request, res: Response) => {
 
 app.get("/readFilter", async (req: Request, res: Response) => {
   const mpost = MyDataS.getRepository(Post);
-  const data = await mpost.find({ where: { postText: Like("%Post%") } });
+  const muser = MyDataS.getRepository(User);
+  const data = await muser.find({
+    where: { post: { postText: Like("%Post%") } },
+  });
+  res.json(data);
+});
+
+app.post("/addData", async (req: Request, res: Response) => {
+  const muser = MyDataS.getRepository(User);
+  const c1 = new Course();
+  c1.cname = "OOP";
+  const c2 = new Course();
+  c2.cname = "DSA";
+  const profile = new Profile();
+  profile.description = "My Profile";
+  const p1 = new Post();
+  p1.postText = "POst of 1";
+  const user = new User();
+  user.email = "bvc@avc";
+  user.profile = profile;
+  user.post = [p1];
+  user.courses = [c1, c2];
+  const data = await muser.save(user);
   res.json(data);
 });
 
