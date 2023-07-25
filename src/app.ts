@@ -1,8 +1,9 @@
 import "reflect-metadata";
 import express, { Request, Response } from "express";
-import { DataSource } from "typeorm";
+import { DataSource, Like } from "typeorm";
 import { User } from "./entities/user";
 import { Profile } from "./entities/profile";
+import { Post } from "./entities/post";
 const app = express();
 
 app.use(express.json());
@@ -67,6 +68,33 @@ app.get("/read", async (req: Request, res: Response) => {
 app.get("/readP", async (req: Request, res: Response) => {
   const mprofile = MyDataS.getRepository(Profile);
   const data = await mprofile.find({ relations: { user: true } });
+  res.json(data);
+});
+
+app.post("/createX", async (req: Request, res: Response) => {
+  const muser = MyDataS.getRepository(User);
+  const user = new User();
+  const profile = new Profile();
+  const post1 = new Post();
+  const post2 = new Post();
+
+  post1.postText = "First Post";
+  post2.postText = "Second Post";
+
+  profile.description = "I am Profile of saadaziz0014@email.com";
+
+  user.email = "saadaziz0014@email.com";
+  user.profile = profile;
+  user.post = [post1, post2];
+
+  const data = await muser.save(user);
+
+  res.json(data);
+});
+
+app.get("/readFilter", async (req: Request, res: Response) => {
+  const mpost = MyDataS.getRepository(Post);
+  const data = await mpost.find({ where: { postText: Like("%Post%") } });
   res.json(data);
 });
 

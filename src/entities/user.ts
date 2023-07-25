@@ -4,8 +4,10 @@ import {
   Column,
   OneToOne,
   JoinColumn,
+  OneToMany,
 } from "typeorm";
 import { Profile } from "./profile";
+import { Post } from "./post";
 
 @Entity()
 export class User {
@@ -20,4 +22,6 @@ export class User {
   })
   @JoinColumn()
   profile: Profile;
+  @OneToMany(() => Post, (post) => post.user, { cascade: true, eager: true })
+  post: Post[];
 }
