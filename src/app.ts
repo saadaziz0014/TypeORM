@@ -2,6 +2,7 @@ import "reflect-metadata";
 import express, { Request, Response } from "express";
 import { DataSource } from "typeorm";
 import { User } from "./entities/user";
+import { Profile } from "./entities/profile";
 const app = express();
 
 app.use(express.json());
@@ -44,6 +45,23 @@ app.patch("/update", async (req: Request, res: Response) => {
   } else {
     res.send("Not Found");
   }
+});
+
+app.post("/create", async (req: Request, res: Response) => {
+  const muser = MyDataS.getRepository(User);
+  const user = new User();
+  const profile = new Profile();
+  profile.description = "First abc Profile";
+  user.email = "abc11@email.com";
+  user.profile = profile;
+  const data = await muser.save(user);
+  res.json(data);
+});
+
+app.get("/read", async (req: Request, res: Response) => {
+  const muser = MyDataS.getRepository(User);
+  const data = await muser.findOne({ where: { email: "abc11@email.com" } });
+  res.json(data);
 });
 
 const MyDataS = new DataSource({
